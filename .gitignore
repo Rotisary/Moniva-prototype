@@ -35,4 +35,5 @@ coverage
 .agents/
 .claude/
 blueprint/
+prototypes/
 CLAUDE.md
