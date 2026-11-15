@@ -81,5 +81,13 @@ export function checkDatasetInvariants(data: DemoDataset): string[] {
     if (!share.sharedSections.includes('business_info')) violations.push(`${share.id} does not include business information`)
   }
 
+  const customerIds = new Set(data.customers.map((c) => c.id))
+  const reminded = new Set<string>()
+  for (const r of data.reorderReminders) {
+    if (!customerIds.has(r.customerId)) violations.push(`Reminder names unknown customer ${r.customerId}`)
+    if (reminded.has(r.customerId)) violations.push(`${r.customerId} has more than one reorder reminder`)
+    reminded.add(r.customerId)
+  }
+
   return violations
 }

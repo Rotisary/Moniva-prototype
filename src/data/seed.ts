@@ -534,5 +534,6 @@ export function generateSeed(): DemoDataset {
     bankRecords,
     expenses,
     shares: [],
+    reorderReminders: [],
   }
 }

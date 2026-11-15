@@ -1,4 +1,4 @@
-export const DATASET_VERSION = 3
+export const DATASET_VERSION = 4
 
 export type Channel = 'whatsapp' | 'instagram'
 export type Source = 'whatsapp' | 'instagram' | 'receipt_upload' | 'bank_record' | 'manual_entry'
@@ -135,6 +135,7 @@ export interface DemoDataset {
   bankRecords: BankRecord[]
   expenses: Expense[]
   shares: Share[]
+  reorderReminders: ReorderReminder[]
 }
 
 export type InstitutionId = 'ireti-mfb' | 'adunni-coop' | 'ofure-sme'
@@ -156,4 +157,14 @@ export interface Share {
   sharedSections: ShareSection[]
   /** ISO date-time on the demo date. */
   consentedAt: string
+}
+
+/** The only stored repeat-purchase state. Purchase counts, intervals, and windows are derived from orders. */
+export interface ReorderReminder {
+  /** At most one reminder per customer. */
+  customerId: string
+  /** The generated preview, stored so "View reminder" shows exactly what was generated. */
+  message: string
+  /** ISO date-time on the demo date. */
+  remindedAt: string
 }
