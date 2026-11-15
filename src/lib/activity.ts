@@ -1,5 +1,6 @@
 import type { DemoDataset, Order, TransactionStatus } from '@/data/types'
 import { CHANNEL_LABELS, PAYMENT_CHANNEL_LABELS } from './format'
+import { ACTIVITY_TYPE_LABELS } from './social'
 
 export type ActivityKind = 'order' | 'payment' | 'enquiry'
 
@@ -13,12 +14,6 @@ export interface ActivityEvent {
   amount?: number
   tag?: { label: string; emphasis?: boolean }
   status?: TransactionStatus
-}
-
-const ACTIVITY_TYPE_LABELS = {
-  product_enquiry: 'Product enquiry',
-  repeat_purchase_enquiry: 'Repeat-purchase enquiry',
-  order: 'Order request',
 }
 
 const INTENT_LABELS = { yes: 'Purchase intent', no: 'No purchase intent', undetermined: 'Intent undetermined' }

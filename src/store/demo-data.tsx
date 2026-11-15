@@ -24,6 +24,10 @@ function loadInitialState(): InitialState {
   return { data: generateSeed(), restoredFromBadSave: true }
 }
 
+function reportViolations(data: DemoDataset) {
+  for (const violation of checkDatasetInvariants(data)) console.error(`[dataset] ${violation}`)
+}
+
 export function DemoDataProvider({ children }: { children: ReactNode }) {
   const [initial] = useState(loadInitialState)
   const [data, setData] = useState(initial.data)
@@ -37,16 +41,14 @@ export function DemoDataProvider({ children }: { children: ReactNode }) {
       localStorage.removeItem(STORAGE_KEY)
       toast.error('Saved demo data could not be read, so the demo dataset was restored.')
     }
-    if (import.meta.env.DEV) {
-      const violations = checkDatasetInvariants(initial.data)
-      for (const violation of violations) console.error(`[dataset] ${violation}`)
-    }
+    if (import.meta.env.DEV) reportViolations(initial.data)
   }, [initial])
 
   const update = useCallback((change: (current: DemoDataset) => DemoDataset) => {
     setData((current) => {
       const next = change(current)
       localStorage.setItem(STORAGE_KEY, JSON.stringify(next))
+      if (import.meta.env.DEV) reportViolations(next)
       return next
     })
   }, [])
