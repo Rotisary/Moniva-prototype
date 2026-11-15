@@ -1,8 +1,8 @@
-import { MetricCard, type DeltaDirection } from '@/components/moniva/MetricCard'
+import { MetricCard } from '@/components/moniva/MetricCard'
 import { ChannelPerformance } from '@/components/overview/ChannelPerformance'
 import { RecentActivity, RecentTransactions } from '@/components/overview/RecentLists'
 import { MonthlyRevenueChart, RevenueExpensesChart } from '@/components/overview/RevenueCharts'
-import { formatCount, formatDelta, formatNairaCompact, formatPercent } from '@/lib/format'
+import { amountDelta, formatCount, formatNairaCompact, formatPercent, rateDelta } from '@/lib/format'
 import {
   cashSales,
   cashTransactions,
@@ -12,8 +12,6 @@ import {
   enquiryToSale,
   monthLabel,
   openOrders,
-  percentChange,
-  pointsChange,
   previousMonth,
   receivables,
   repeatCustomerRate,
@@ -22,19 +20,6 @@ import {
   verifiedDigitalTransactions,
 } from '@/lib/metrics'
 import { useDemoData } from '@/store/demo-data-context'
-
-const direction = (change: number | null): DeltaDirection =>
-  change === null || Math.abs(change) < 0.0005 ? 'flat' : change > 0 ? 'up' : 'down'
-
-const amountDelta = (current: number, previous: number) => {
-  const change = percentChange(current, previous)
-  return { text: formatDelta(change, 'percent'), direction: direction(change) }
-}
-
-const rateDelta = (current: number, previous: number) => {
-  const change = pointsChange(current, previous)
-  return { text: formatDelta(change, 'points'), direction: direction(change / 100) }
-}
 
 export function OverviewPage() {
   const { data } = useDemoData()

@@ -1,5 +1,6 @@
 import { format, parseISO } from 'date-fns'
-import type { Channel, PaymentChannel } from '../data/types.ts'
+import type { Channel, ExpenseCategory, PaymentChannel } from '../data/types.ts'
+import { percentChange, pointsChange } from './metrics.ts'
 
 const whole = new Intl.NumberFormat('en-NG', { maximumFractionDigits: 0 })
 
@@ -35,6 +36,23 @@ export function formatDelta(change: number | null, kind: 'percent' | 'points'): 
   return `${sign}${Math.abs(value).toFixed(1)}${kind === 'percent' ? '%' : ' pts'}`
 }
 
+export type DeltaDirection = 'up' | 'down' | 'flat'
+
+const direction = (change: number | null): DeltaDirection =>
+  change === null || Math.abs(change) < 0.0005 ? 'flat' : change > 0 ? 'up' : 'down'
+
+/** MetricCard delta for amounts and counts: a relative change. */
+export function amountDelta(current: number, previous: number) {
+  const change = percentChange(current, previous)
+  return { text: formatDelta(change, 'percent'), direction: direction(change) }
+}
+
+/** MetricCard delta for rates (0 to 1): a change in percentage points. */
+export function rateDelta(current: number, previous: number) {
+  const change = pointsChange(current, previous)
+  return { text: formatDelta(change, 'points'), direction: direction(change / 100) }
+}
+
 export const formatDate = (iso: string, pattern = 'd MMM yyyy') => format(parseISO(iso), pattern)
 
 export const formatDateTime = (iso: string) => format(parseISO(iso), 'd MMM, HH:mm')
@@ -46,4 +64,13 @@ export const PAYMENT_CHANNEL_LABELS: Record<PaymentChannel, string> = {
   pos: 'POS',
   card: 'Card',
   cash: 'Cash',
+}
+
+export const EXPENSE_CATEGORY_LABELS: Record<ExpenseCategory, string> = {
+  stock: 'Stock',
+  logistics: 'Logistics',
+  rent: 'Rent',
+  data_airtime: 'Data and airtime',
+  packaging: 'Packaging',
+  staff: 'Staff',
 }

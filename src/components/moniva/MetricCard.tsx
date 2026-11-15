@@ -1,8 +1,8 @@
 import { ArrowDownRight, ArrowUpRight, Minus } from 'lucide-react'
+import type { DeltaDirection } from '@/lib/format'
 import { cn } from '@/lib/utils'
 
 export type MetricVariant = 'tint-1' | 'tint-2' | 'tint-3' | 'inverse' | 'plain'
-export type DeltaDirection = 'up' | 'down' | 'flat'
 
 const VARIANTS: Record<MetricVariant, string> = {
   'tint-1': 'bg-tint-1',
