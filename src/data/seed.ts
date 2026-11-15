@@ -486,6 +486,9 @@ export function generateSeed(): DemoDataset {
     customerClassification: 'new',
   })
 
+  // Trusted bank record for sample receipt 1 (Amaka's payment), recorded through the receipt intake.
+  bankRecords.push({ reference: 'TRX-2611-0601', amount: 35000, date: '2026-11-30T12:20:00' })
+
   // Expenses scale with each month's revenue, so both rise together.
   MONTHS.forEach(({ year, month }, i) => {
     const key = `${year}-${pad(month)}`

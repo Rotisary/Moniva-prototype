@@ -1,4 +1,4 @@
-export const DATASET_VERSION = 1
+export const DATASET_VERSION = 2
 
 export type Channel = 'whatsapp' | 'instagram'
 export type Source = 'whatsapp' | 'instagram' | 'receipt_upload' | 'bank_record' | 'manual_entry'
@@ -89,6 +89,8 @@ export type TransactionStatus =
 
 export interface Receipt {
   sampleId: string
+  /** Name of an uploaded receipt image. The image itself is not stored. */
+  fileName?: string
   extracted: { reference: string; amount: number; date: string }
 }
 

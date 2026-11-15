@@ -9,19 +9,26 @@ const STORAGE_KEY = 'moniva.demo.v1'
 
 interface InitialState {
   data: DemoDataset
-  restoredFromBadSave: boolean
+  /** Why saved data was discarded on load, if it was. */
+  reset?: 'unreadable' | 'outdated'
+}
+
+const RESET_MESSAGES = {
+  unreadable: 'Saved demo data could not be read, so the demo dataset was restored.',
+  outdated: "Moniva's demo data was updated, so your saved demo changes were reset.",
 }
 
 function loadInitialState(): InitialState {
   const saved = localStorage.getItem(STORAGE_KEY)
-  if (saved === null) return { data: generateSeed(), restoredFromBadSave: false }
+  if (saved === null) return { data: generateSeed() }
   try {
     const parsed = JSON.parse(saved) as Partial<DemoDataset>
-    if (parsed.version === DATASET_VERSION) return { data: parsed as DemoDataset, restoredFromBadSave: false }
+    if (parsed.version === DATASET_VERSION) return { data: parsed as DemoDataset }
+    if (typeof parsed.version === 'number') return { data: generateSeed(), reset: 'outdated' }
   } catch {
     // Falls through to restoring the seed below.
   }
-  return { data: generateSeed(), restoredFromBadSave: true }
+  return { data: generateSeed(), reset: 'unreadable' }
 }
 
 function reportViolations(data: DemoDataset) {
@@ -37,9 +44,10 @@ export function DemoDataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (startupHandled.current) return
     startupHandled.current = true
-    if (initial.restoredFromBadSave) {
+    if (initial.reset) {
       localStorage.removeItem(STORAGE_KEY)
-      toast.error('Saved demo data could not be read, so the demo dataset was restored.')
+      if (initial.reset === 'unreadable') toast.error(RESET_MESSAGES.unreadable)
+      else toast.info(RESET_MESSAGES.outdated)
     }
     if (import.meta.env.DEV) reportViolations(initial.data)
   }, [initial])

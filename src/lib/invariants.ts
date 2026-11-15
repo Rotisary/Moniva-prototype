@@ -38,6 +38,19 @@ export function checkDatasetInvariants(data: DemoDataset): string[] {
     if (status !== 'awaiting_verification') violations.push(`${t.reference} is pending but ${t.orderId} is ${status}`)
   }
 
+  const pendingByOrder = new Map<string, number>()
+  for (const t of data.transactions) {
+    if (t.status === 'pending_verification' && t.orderId) {
+      pendingByOrder.set(t.orderId, (pendingByOrder.get(t.orderId) ?? 0) + 1)
+    }
+  }
+  for (const o of data.orders) {
+    const pending = pendingByOrder.get(o.id) ?? 0
+    if (o.status === 'awaiting_verification' && pending !== 1) {
+      violations.push(`${o.id} is awaiting verification with ${pending} pending transactions (expected 1)`)
+    }
+  }
+
   const references = new Set<string>()
   for (const t of data.transactions) {
     if (references.has(t.reference)) violations.push(`Duplicate transaction reference ${t.reference}`)
