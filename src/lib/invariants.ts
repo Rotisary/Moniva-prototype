@@ -1,6 +1,7 @@
 import { DEMO_TODAY } from '../data/seed.ts'
 import type { DemoDataset } from '../data/types.ts'
 import { cashSales, revenue, verifiedDigital } from './metrics.ts'
+import { INSTITUTION_IDS } from './sharing.ts'
 
 const COMPLETING = new Set(['verified', 'merchant_confirmed'])
 
@@ -69,6 +70,15 @@ export function checkDatasetInvariants(data: DemoDataset): string[] {
   ]
   for (const [id, date] of dated) {
     if (date.slice(0, 10) > DEMO_TODAY) violations.push(`${id} is dated after the demo date (${date})`)
+  }
+
+  const institutions = new Set<string>(INSTITUTION_IDS)
+  const shareIds = new Set<string>()
+  for (const share of data.shares) {
+    if (shareIds.has(share.id)) violations.push(`Duplicate share id ${share.id}`)
+    shareIds.add(share.id)
+    if (!institutions.has(share.institutionId)) violations.push(`${share.id} names unknown institution ${share.institutionId}`)
+    if (!share.sharedSections.includes('business_info')) violations.push(`${share.id} does not include business information`)
   }
 
   return violations

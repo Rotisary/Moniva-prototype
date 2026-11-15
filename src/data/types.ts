@@ -1,4 +1,4 @@
-export const DATASET_VERSION = 2
+export const DATASET_VERSION = 3
 
 export type Channel = 'whatsapp' | 'instagram'
 export type Source = 'whatsapp' | 'instagram' | 'receipt_upload' | 'bank_record' | 'manual_entry'
@@ -134,4 +134,26 @@ export interface DemoDataset {
   transactions: Transaction[]
   bankRecords: BankRecord[]
   expenses: Expense[]
+  shares: Share[]
+}
+
+export type InstitutionId = 'ireti-mfb' | 'adunni-coop' | 'ofure-sme'
+
+export type ShareSection =
+  | 'business_info'
+  | 'revenue_history'
+  | 'verified_volume'
+  | 'expenses'
+  | 'customer_activity'
+  | 'health_indicators'
+  | 'verification_breakdown'
+
+/** A confirmed simulated share. Shares are append-only; the bank-facing view reads them by id. */
+export interface Share {
+  id: string
+  institutionId: InstitutionId
+  /** Always includes `business_info`, stored in SHARE_SECTIONS order. */
+  sharedSections: ShareSection[]
+  /** ISO date-time on the demo date. */
+  consentedAt: string
 }

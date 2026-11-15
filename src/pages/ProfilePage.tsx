@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { toast } from 'sonner'
 import { MetricCard } from '@/components/moniva/MetricCard'
 import { BusinessHeader } from '@/components/profile/BusinessHeader'
@@ -6,6 +6,8 @@ import { HealthOverview } from '@/components/profile/HealthOverview'
 import { PrintReportHeader } from '@/components/profile/PrintReportHeader'
 import { ProfileDetails } from '@/components/profile/ProfileDetails'
 import { RevenueHistoryChart } from '@/components/profile/RevenueHistoryChart'
+import { ShareDialog } from '@/components/sharing/ShareDialog'
+import { SharedWithPanel } from '@/components/sharing/SharedWithPanel'
 import { formatNairaCompact, formatPercent } from '@/lib/format'
 import { healthIndicators, profileSummary } from '@/lib/profile'
 import { useDemoData } from '@/store/demo-data-context'
@@ -16,6 +18,7 @@ export function ProfilePage() {
   const { data } = useDemoData()
   const summary = useMemo(() => profileSummary(data), [data])
   const indicators = useMemo(() => healthIndicators(summary), [summary])
+  const [sharing, setSharing] = useState(false)
 
   function downloadReport() {
     toast.info('In the print dialog, choose Save as PDF to download the report.')
@@ -26,7 +29,12 @@ export function ProfilePage() {
   return (
     <div className="flex flex-col gap-4">
       <PrintReportHeader businessName={data.business.name} />
-      <BusinessHeader business={data.business} operatingMonths={summary.operatingMonths} onDownload={downloadReport} />
+      <BusinessHeader
+        business={data.business}
+        operatingMonths={summary.operatingMonths}
+        onDownload={downloadReport}
+        onShare={() => setSharing(true)}
+      />
 
       <section aria-label="Key figures for the last 12 months" className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         <MetricCard
@@ -74,6 +82,8 @@ export function ProfilePage() {
       <RevenueHistoryChart months={summary.months} />
       <ProfileDetails summary={summary} />
       <HealthOverview indicators={indicators} />
+      <SharedWithPanel shares={data.shares} />
+      <ShareDialog open={sharing} onOpenChange={setSharing} summary={summary} />
     </div>
   )
 }

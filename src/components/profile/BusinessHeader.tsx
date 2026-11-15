@@ -1,4 +1,4 @@
-import { Download } from 'lucide-react'
+import { Download, Share2 } from 'lucide-react'
 import { Tag } from '@/components/moniva/Tag'
 import { Button } from '@/components/ui/button'
 import type { Business } from '@/data/types'
@@ -10,9 +10,10 @@ interface BusinessHeaderProps {
   business: Business
   operatingMonths: number
   onDownload: () => void
+  onShare: () => void
 }
 
-export function BusinessHeader({ business, operatingMonths, onDownload }: BusinessHeaderProps) {
+export function BusinessHeader({ business, operatingMonths, onDownload, onShare }: BusinessHeaderProps) {
   const since = monthLabel(business.operatingSince.slice(0, 7), 'long')
   const details: Array<[string, string]> = [
     ['Location', business.location],
@@ -31,10 +32,16 @@ export function BusinessHeader({ business, operatingMonths, onDownload }: Busine
           <h2 className="mt-1 text-2xl font-bold tracking-tight">{business.name}</h2>
           <Tag className="mt-2">{business.category}</Tag>
         </div>
-        <Button className="ml-auto h-9 rounded-full px-4 print:hidden" onClick={onDownload}>
-          <Download aria-hidden />
-          Download Financial Report
-        </Button>
+        <div className="ml-auto flex flex-wrap gap-2 print:hidden">
+          <Button variant="outline" className="h-9 rounded-full bg-card px-4" onClick={onDownload}>
+            <Download aria-hidden />
+            Download Financial Report
+          </Button>
+          <Button className="h-9 rounded-full px-4" onClick={onShare}>
+            <Share2 aria-hidden />
+            Share with a financial institution
+          </Button>
+        </div>
       </div>
       <dl className="grid gap-3 sm:grid-cols-3">
         {details.map(([term, value]) => (
