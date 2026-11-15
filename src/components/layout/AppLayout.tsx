@@ -25,10 +25,10 @@ export function AppLayout() {
 
   return (
     <div className="flex min-h-screen">
-      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 bg-sidebar lg:block">
+      <aside className="sticky top-0 hidden h-screen w-60 shrink-0 bg-sidebar lg:block print:hidden">
         <SidebarContent />
       </aside>
-      <main className="min-w-0 flex-1 p-4 sm:p-6">
+      <main className="min-w-0 flex-1 p-4 sm:p-6 print:p-0">
         <TopBar menu={menu} />
         <Outlet />
       </main>

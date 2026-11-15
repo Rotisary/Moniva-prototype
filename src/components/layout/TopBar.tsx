@@ -14,7 +14,7 @@ export function TopBar({ menu }: { menu: ReactNode }) {
   const subtitle = item.to === '/' ? OVERVIEW_SUBTITLE : item.subtitle
 
   return (
-    <header className="mb-6 flex items-center gap-4">
+    <header className="mb-6 flex items-center gap-4 print:hidden">
       {menu}
       <div className="min-w-0">
         <h1 className="text-3xl font-bold tracking-tight">{item.label}</h1>

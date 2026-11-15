@@ -12,7 +12,7 @@ createRoot(document.getElementById('root')!).render(
       <DemoDataProvider>
         <App />
       </DemoDataProvider>
-      <Toaster theme="light" position="bottom-right" />
+      <Toaster theme="light" position="bottom-right" className="toaster group print:hidden" />
     </BrowserRouter>
   </StrictMode>,
 )
